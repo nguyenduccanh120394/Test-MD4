@@ -52,12 +52,22 @@ public class ProductController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute("product") Product product, Model model) {
-
+    public String edit(@ModelAttribute("product") Product product) {
         productService.save(product);
         return "redirect:list";
     }
-
+    @GetMapping("/delete/{id}")
+    public ModelAndView deleteForm(@PathVariable Long id){
+        Optional<Product> product = productService.fidById(id);
+        ModelAndView modelAndView = new ModelAndView("/product/delete");
+        modelAndView.addObject("product",product.get());
+        return modelAndView;
+    }
+    @PostMapping("/delete")
+    public String delete(@ModelAttribute("product")Product product){
+        productService.remove(product.getId());
+        return "redirect:list";
+    }
     @GetMapping("/api")
     public String list() {
         return "/list";
